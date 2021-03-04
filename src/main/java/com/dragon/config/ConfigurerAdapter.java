@@ -1,4 +1,4 @@
-package com.dragon.modules.system.config;
+package com.dragon.config;
 
 import com.dragon.modules.common.config.FileProperties;
 import org.springframework.context.annotation.Bean;

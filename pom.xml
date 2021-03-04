@@ -151,6 +151,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
+
         <!-- Swagger UI 相关 -->
         <dependency>
             <groupId>io.springfox</groupId>
