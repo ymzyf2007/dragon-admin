@@ -6,6 +6,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@Component
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
     private static ApplicationContext applicationContext = null;
     private static final List<CallBack> CALL_BACKS = new ArrayList<>();
