@@ -1,5 +1,6 @@
 package com.dragon.modules.security.config;
 
+import com.dragon.modules.security.config.bean.LoginProperties;
 import com.dragon.modules.security.config.bean.SecurityProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,11 +12,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConfigBeanConfiguration {
 
-//    @Bean
-//    @ConfigurationProperties(prefix = "login", ignoreUnknownFields = true)
-//    public LoginProperties loginProperties() {
-//        return new LoginProperties();
-//    }
+    @Bean
+    @ConfigurationProperties(prefix = "login", ignoreUnknownFields = true)
+    public LoginProperties loginProperties() {
+        return new LoginProperties();
+    }
 
     @Bean
     @ConfigurationProperties(prefix = "jwt", ignoreUnknownFields = true)

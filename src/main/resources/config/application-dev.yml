@@ -52,7 +52,30 @@ spring:
     #连接超时时间
     timeout: 5000
 
-#jwt
+# 登录相关配置
+login:
+  # 是否登录缓存
+  cache-enable: true
+  # 是否限制单用户登录
+  single-login: false
+  # 验证码
+  login-code:
+    # 验证码类型配置 查看 LoginCodeEnum 类
+    code-type: arithmetic
+    # 验证码宽度
+    width: 111
+    #  验证码高度
+    heigth: 36
+    # 字体名称，为空则使用默认字体
+    font-name:
+    # 字体大小
+    font-size: 25
+    # 内容长度
+    length: 2
+    # 登录图形验证码有效时间/分钟
+    expiration: 2
+
+# jwt
 jwt:
   header: Authorization
   # 令牌前缀
@@ -92,3 +115,8 @@ file:
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5
+
+#密码加密传输，前端公钥加密，后端私钥解密
+rsa:
+  #public_key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9ywMeCx0B/RlyEYvOZJ0RPFIZipgZK8urD84hpXkMM/NdSklNn5IgpUsOtWyRdxcTJYnQg0Rk389UIQiWFcuoPDW4luLZQMXAxtmVp4KBlaxAHI2bDUUXIBb69BFYYm1fJXjQPt5DU+RpYPlci+S/Y49zMAHCLAx7ohKuDpfaNQIDAQAB
+  private_key: MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAL3LAx4LHQH9GXIRi85knRE8UhmKmBkry6sPziGleQwz811KSU2fkiClSw61bJF3FxMlidCDRGTfz1QhCJYVy6g8NbiW4tlAxcDG2ZWngoGVrEAcjZsNRRcgFvr0EVhibV8leNA+3kNT5Glg+VyL5L9jj3MwAcIsDHuiEq4Ol9o1AgMBAAECgYEAq04e/TIIt6/MFNJTfzH/NvxcGiOnTyjhhwAYDPR/Qo1tfum7Ki36Ri8LhTYpzU5RbH24W5Tv2aDNUOEUD+uSSjQrm6PmVP4X7MB2RU+oZ6+xYxEvxHQJ953PUm9w2AUhW4MXZIdf5EF2N7GH+cI9dvqEG9phXwUVO26WNzX9+A0CQQDiIC+SRsAohtx2MvnWdtwqsSAmo+9LkFTDtGQLP+lTRE77DFe+/jAmtq0yGL4lK6PGJj9JoDi/eHQsx83UIhpjAkEA1t4D5Nb8f9XWDauDU3sod2SFE4PvfKjATUS9Z+kEo8PxN0lGUNkYiGAgeciiD8Xoj3U3Ci3kVMLwmGwk7j9QhwJABCaZGPNJhbTsCRNoeKJX6kS0FWF+/AEbPThrebVjoA6p8HvKhIv/8EX8KeZAX0hMyk9bbAuP3xvj7gqA4br6hwJANzUuXPMcR6Bi8no6MQ349MxgIQaKV0ZourHJ1NQbfBSRevoZ1hYh5pCEZ6Y0dccNHScp8DSgcWLxPMi0qH6eKwJBAIFNugGBz8UY1x1YEyPlbB2lOUGTzverFDb8rFkUqGXKvxE8jaUMKxqPwfR+ggHCLDGjP2XLZ/CjZaCJg5bZ/tg=
