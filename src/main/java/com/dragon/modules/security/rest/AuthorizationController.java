@@ -115,38 +115,21 @@ public class AuthorizationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 生成令牌
         String token = tokenProvider.createToken(authentication);
-        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
-        // 保存在线信息
-        onlineUserService.save(jwtUserDto, token, request);
-        // 返回 token 与 用户信息
-        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
-            put("token", properties.getTokenStartWith() + token);
-            put("user", jwtUserDto);
-        }};
-        if (loginProperties.isSingleLogin()) {
-            // 踢掉之前已经登录的token
-            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
-        }
-        return ResponseEntity.ok(authInfo);
+//        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+//        // 保存在线信息
+//        onlineUserService.save(jwtUserDto, token, request);
+//        // 返回 token 与 用户信息
+//        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
+//            put("token", properties.getTokenStartWith() + token);
+//            put("user", jwtUserDto);
+//        }};
+//        if (loginProperties.isSingleLogin()) {
+//            // 踢掉之前已经登录的token
+//            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
+//        }
+//        return ResponseEntity.ok(authInfo);
+        return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
