@@ -12,6 +12,7 @@ import com.dragon.modules.security.config.bean.LoginCodeEnum;
 import com.dragon.modules.security.config.bean.LoginProperties;
 import com.dragon.modules.security.config.bean.SecurityProperties;
 import com.dragon.modules.security.dto.AuthUserDto;
+import com.dragon.modules.security.dto.JwtUserDto;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -103,7 +104,6 @@ public class AuthorizationController {
         if (StringUtils.isBlank(authUser.getCode()) || !authUser.getCode().equalsIgnoreCase(code)) {
             throw new BadRequestException("验证码错误");
         }
-
         // 封装用户名密码的基石
         // 通过UsernamePasswordAuthenticationToken实例化了Authentication接口，
         // 继而按照流程，将其传递给AuthenticationMananger调用身份验证核心完成相关工作
@@ -115,20 +115,19 @@ public class AuthorizationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 生成令牌
         String token = tokenProvider.createToken(authentication);
-//        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
 //        // 保存在线信息
 //        onlineUserService.save(jwtUserDto, token, request);
-//        // 返回 token 与 用户信息
-//        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
-//            put("token", properties.getTokenStartWith() + token);
-//            put("user", jwtUserDto);
-//        }};
+        // 返回 token 与 用户信息
+        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
+            put("token", properties.getTokenStartWith() + token);
+            put("user", jwtUserDto);
+        }};
 //        if (loginProperties.isSingleLogin()) {
 //            // 踢掉之前已经登录的token
 //            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
 //        }
-//        return ResponseEntity.ok(authInfo);
-        return null;
+        return ResponseEntity.ok(authInfo);
     }
 
 

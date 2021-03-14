@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,5 +38,19 @@ public class Role extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "描述")
     private String description;
+
+    @ManyToMany
+    @JoinTable(name = "sys_roles_menus",
+            joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")},
+            inverseJoinColumns = {@JoinColumn(name = "menu_id", referencedColumnName = "menu_id")})
+    @ApiModelProperty(value = "菜单", hidden = true)
+    private Set<Menu> menus;
+
+    @ManyToMany
+    @JoinTable(name = "sys_roles_depts",
+            joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")},
+            inverseJoinColumns = {@JoinColumn(name = "dept_id", referencedColumnName = "dept_id")})
+    @ApiModelProperty(value = "部门", hidden = true)
+    private Set<Dept> depts;
 
 }

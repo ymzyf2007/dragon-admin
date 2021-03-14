@@ -1,5 +1,7 @@
 package com.dragon.modules.security.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.dragon.modules.system.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
