@@ -22,14 +22,14 @@ public class JwtUserDto implements UserDetails {
     @JSONField(serialize = false)
     private final List<GrantedAuthority> authorities;
 
-    public Set<String> getRoles() {
-        Set<String> set = new HashSet<>();
-        for (GrantedAuthority grantedAuthority : authorities) {
-            String authority = grantedAuthority.getAuthority();
-            set.add(authority);
-        }
-        return set;
-    }
+//    public Set<String> getRoles() {
+//        Set<String> set = new HashSet<>();
+//        for (GrantedAuthority grantedAuthority : authorities) {
+//            String authority = grantedAuthority.getAuthority();
+//            set.add(authority);
+//        }
+//        return set;
+//    }
 
     @Override
     @JSONField(serialize = false)
