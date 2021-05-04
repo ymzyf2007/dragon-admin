@@ -5,6 +5,8 @@ import com.dragon.modules.common.exception.EntityNotFoundException;
 import com.dragon.modules.security.config.bean.LoginProperties;
 import com.dragon.modules.security.dto.JwtUserDto;
 import com.dragon.modules.system.dto.UserDto;
+import com.dragon.modules.system.service.DataService;
+import com.dragon.modules.system.service.RoleService;
 import com.dragon.modules.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,16 +23,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserService userService;
-    //    @Autowired
-//    private RoleService roleService;
-//    @Autowired
-//    private DataService dataService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private DataService dataService;
     @Autowired
     private LoginProperties loginProperties;
     /**
      * 用户信息缓存
      */
-    private static Map<String, JwtUserDto> USER_CACHE = new ConcurrentHashMap<>();
+    public static Map<String, JwtUserDto> USER_CACHE = new ConcurrentHashMap<>();
 
     @Override
     public JwtUserDto loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -56,10 +58,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 }
                 jwtUserDto = new JwtUserDto(
                         user,
-null,
-null
-//                        dataService.getDeptIds(user),
-//                        roleService.mapToGrantedAuthorities(user)
+                        dataService.getDeptIds(user),
+                        roleService.mapToGrantedAuthorities(user)
                 );
                 USER_CACHE.put(username, jwtUserDto);
             }

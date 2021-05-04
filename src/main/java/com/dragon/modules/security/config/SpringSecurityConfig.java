@@ -7,6 +7,8 @@ import com.dragon.modules.security.JwtAuthenticationEntryPoint;
 import com.dragon.modules.security.TokenConfigurer;
 import com.dragon.modules.security.TokenProvider;
 import com.dragon.modules.security.config.bean.SecurityProperties;
+import com.dragon.modules.security.service.OnlineUserService;
+import com.dragon.modules.security.service.UserCacheClean;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -41,8 +43,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final ApplicationContext applicationContext;
     private final SecurityProperties properties;
-//    private final OnlineUserService onlineUserService;
-//    private final UserCacheClean userCacheClean;
+    private final OnlineUserService onlineUserService;
+    private final UserCacheClean userCacheClean;
 
     @Bean
     GrantedAuthorityDefaults grantedAuthorityDefaults() {
@@ -122,7 +124,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private TokenConfigurer securityConfigurerAdapter() {
-        return new TokenConfigurer(tokenProvider, properties/*, onlineUserService, userCacheClean*/);
+        return new TokenConfigurer(tokenProvider, properties, onlineUserService, userCacheClean);
     }
 
     private Map<String, Set<String>> getAnonymousUrl(Map<RequestMappingInfo, HandlerMethod> handlerMethodMap) {

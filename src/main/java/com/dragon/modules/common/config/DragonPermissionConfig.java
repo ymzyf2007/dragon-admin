@@ -1,5 +1,6 @@
 package com.dragon.modules.common.config;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.dragon.modules.common.utils.SecurityUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,11 @@ public class DragonPermissionConfig {
 //        // 判断当前用户的所有权限是否包含接口上定义的权限
 //        return perms.contains("admin") || Arrays.stream(permissions).anyMatch(perms::contains);
         List<String> perms = new ArrayList<>();
-        for (GrantedAuthority grantedAuthority : SecurityUtils.getCurrentUser().getAuthorities()) {
-            String authority = grantedAuthority.getAuthority();
-            perms.add(authority);
+        if(CollectionUtil.isNotEmpty(SecurityUtils.getCurrentUser().getAuthorities())) {
+            for (GrantedAuthority grantedAuthority : SecurityUtils.getCurrentUser().getAuthorities()) {
+                String authority = grantedAuthority.getAuthority();
+                perms.add(authority);
+            }
         }
         // 判断当前用户的所有权限是否包含接口上定义的权限
         return perms.contains("admin") || Arrays.stream(permissions).anyMatch(perms::contains);

@@ -191,19 +191,19 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         // 一次性写出内容，使用默认样式，强制输出标题
         writer.write(list, true);
         SXSSFSheet sheet = (SXSSFSheet) writer.getSheet();
-        //上面需要强转SXSSFSheet  不然没有trackAllColumnsForAutoSizing方法
+        // 上面需要强转SXSSFSheet  不然没有trackAllColumnsForAutoSizing方法
         sheet.trackAllColumnsForAutoSizing();
-        //列宽自适应
+        // 列宽自适应
         writer.autoSizeColumnAll();
-        //response为HttpServletResponse对象
+        // response为HttpServletResponse对象
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
+        // test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
         response.setHeader("Content-Disposition", "attachment;filename=file.xlsx");
         ServletOutputStream out = response.getOutputStream();
         // 终止后删除临时文件
         file.deleteOnExit();
         writer.flush(out, true);
-        //此处记得关闭输出Servlet流
+        // 此处记得关闭输出Servlet流
         IoUtil.close(out);
     }
 

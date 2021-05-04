@@ -2,6 +2,9 @@ package com.dragon.modules.security;
 
 import cn.hutool.core.util.StrUtil;
 import com.dragon.modules.security.config.bean.SecurityProperties;
+import com.dragon.modules.security.dto.OnlineUserDto;
+import com.dragon.modules.security.service.OnlineUserService;
+import com.dragon.modules.security.service.UserCacheClean;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -19,50 +22,50 @@ import java.util.Objects;
 
 @Slf4j
 public class TokenFilter extends GenericFilterBean {
-    private final TokenProvider tokenProvider;
-    private final SecurityProperties properties;
-//    private final OnlineUserService onlineUserService;
-//    private final UserCacheClean userCacheClean;
+    private TokenProvider tokenProvider;
+    private SecurityProperties properties;
+    private OnlineUserService onlineUserService;
+    private UserCacheClean userCacheClean;
 
     /**
      * @param tokenProvider     Token
      * @param properties        JWT
-//     * @param onlineUserService 用户在线
-//     * @param userCacheClean    用户缓存清理工具
+     * @param onlineUserService 用户在线
+     * @param userCacheClean    用户缓存清理工具
      */
-    public TokenFilter(TokenProvider tokenProvider, SecurityProperties properties/*, OnlineUserService onlineUserService, UserCacheClean userCacheClean*/) {
+    public TokenFilter(TokenProvider tokenProvider, SecurityProperties properties, OnlineUserService onlineUserService, UserCacheClean userCacheClean) {
         this.tokenProvider = tokenProvider;
         this.properties = properties;
-//        this.onlineUserService = onlineUserService;
-//        this.userCacheClean = userCacheClean;
+        this.onlineUserService = onlineUserService;
+        this.userCacheClean = userCacheClean;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-//        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-//        String token = resolveToken(httpServletRequest);
-//        // 对于 Token 为空的不需要去查 Redis
-//        if (StrUtil.isNotBlank(token)) {
-//            OnlineUserDto onlineUserDto = null;
-//            boolean cleanUserCache = false;
-//            try {
-//                onlineUserDto = onlineUserService.getOne(properties.getOnlineKey() + token);
-//            } catch (ExpiredJwtException e) {
-//                log.error(e.getMessage());
-//                cleanUserCache = true;
-//            } finally {
-//                if (cleanUserCache || Objects.isNull(onlineUserDto)) {
-//                    userCacheClean.cleanUserCache(String.valueOf(tokenProvider.getClaims(token).get(TokenProvider.AUTHORITIES_KEY)));
-//                }
-//            }
-//            if (onlineUserDto != null && StringUtils.hasText(token)) {
-//                Authentication authentication = tokenProvider.getAuthentication(token);
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//                // Token 续期
-//                tokenProvider.checkRenewal(token);
-//            }
-//        }
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        String token = resolveToken(httpServletRequest);
+        // 对于 Token 为空的不需要去查 Redis
+        if (StrUtil.isNotBlank(token)) {
+            OnlineUserDto onlineUserDto = null;
+            boolean cleanUserCache = false;
+            try {
+                onlineUserDto = onlineUserService.getOne(properties.getOnlineKey() + token);
+            } catch (ExpiredJwtException e) {
+                log.error(e.getMessage());
+                cleanUserCache = true;
+            } finally {
+                if (cleanUserCache || Objects.isNull(onlineUserDto)) {
+                    userCacheClean.cleanUserCache(String.valueOf(tokenProvider.getClaims(token).get(TokenProvider.AUTHORITIES_KEY)));
+                }
+            }
+            if (onlineUserDto != null && StringUtils.hasText(token)) {
+                Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                // Token 续期
+                tokenProvider.checkRenewal(token);
+            }
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

@@ -1,30 +1,35 @@
 package com.dragon.modules.security.rest;
 
 import cn.hutool.core.util.IdUtil;
+import com.dragon.modules.common.annotation.rest.AnonymousDeleteMapping;
 import com.dragon.modules.common.annotation.rest.AnonymousGetMapping;
 import com.dragon.modules.common.annotation.rest.AnonymousPostMapping;
 import com.dragon.modules.common.config.RsaProperties;
 import com.dragon.modules.common.exception.BadRequestException;
 import com.dragon.modules.common.utils.RedisUtils;
 import com.dragon.modules.common.utils.RsaUtils;
+import com.dragon.modules.common.utils.SecurityUtils;
 import com.dragon.modules.security.TokenProvider;
 import com.dragon.modules.security.config.bean.LoginCodeEnum;
 import com.dragon.modules.security.config.bean.LoginProperties;
 import com.dragon.modules.security.config.bean.SecurityProperties;
 import com.dragon.modules.security.dto.AuthUserDto;
 import com.dragon.modules.security.dto.JwtUserDto;
+import com.dragon.modules.security.service.OnlineUserService;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +57,8 @@ public class AuthorizationController {
 
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @ApiOperation("获取验证码")
     @AnonymousGetMapping(value = "/code")
@@ -116,21 +123,31 @@ public class AuthorizationController {
         // 生成令牌
         String token = tokenProvider.createToken(authentication);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
-//        // 保存在线信息
-//        onlineUserService.save(jwtUserDto, token, request);
+        // 保存在线信息
+        onlineUserService.save(jwtUserDto, token, request);
         // 返回 token 与 用户信息
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", properties.getTokenStartWith() + token);
             put("user", jwtUserDto);
         }};
-//        if (loginProperties.isSingleLogin()) {
-//            // 踢掉之前已经登录的token
-//            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
-//        }
+        if (loginProperties.isSingleLogin()) {
+            // 踢掉之前已经登录的token
+            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
+        }
         return ResponseEntity.ok(authInfo);
     }
 
+    @ApiOperation("获取用户信息")
+    @GetMapping(value = "/info")
+    public ResponseEntity<Object> getUserInfo() {
+        return ResponseEntity.ok(SecurityUtils.getCurrentUser());
+    }
 
-
+    @ApiOperation("退出登录")
+    @AnonymousDeleteMapping(value = "/logout")
+    public ResponseEntity<Object> logout(HttpServletRequest request) {
+        onlineUserService.logout(tokenProvider.getToken(request));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
